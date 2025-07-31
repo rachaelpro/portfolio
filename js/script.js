@@ -141,3 +141,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+const container = document.getElementById("recommendationScroll");
+  const leftBtn = document.querySelector(".left-btn");
+  const rightBtn = document.querySelector(".right-btn");
+
+  function getCardsPerView() {
+    const containerWidth = container.offsetWidth;
+    const cardWidth = container.querySelector(".testimonial-card").offsetWidth;
+    const gap = 20; // same gap as CSS
+    return Math.floor(containerWidth / (cardWidth + gap));
+  }
+
+  function scrollByCards(direction) {
+    const cardsPerView = getCardsPerView();
+    const cardWidth = container.querySelector(".testimonial-card").offsetWidth;
+    const gap = 20;
+    const scrollAmount = (cardWidth + gap) * cardsPerView;
+    container.scrollBy({ left: direction * scrollAmount, behavior: "smooth" });
+  }
+
+  function scrollByCardsCycle(direction) {
+    const cardsPerView = getCardsPerView();
+    const cardWidth = container.querySelector(".testimonial-card").offsetWidth;
+    const gap = 20;
+    const scrollAmount = (cardWidth + gap) * cardsPerView;
+  
+    let newScroll = container.scrollLeft + direction * scrollAmount;
+  
+    if (newScroll < 0) {
+      // cycle to end
+      newScroll = container.scrollWidth - container.offsetWidth;
+    } else if (newScroll > container.scrollWidth - container.offsetWidth) {
+      // cycle to start
+      newScroll = 0;
+    }
+  
+    container.scrollTo({ left: newScroll, behavior: "smooth" });
+  }
+  
+  leftBtn.addEventListener("click", () => scrollByCardsCycle(-1));
+  rightBtn.addEventListener("click", () => scrollByCardsCycle(1));
+  
+  // You can remove disabling arrows logic since we always cycle
+  
+
+  container.addEventListener("scroll", updateArrowState);
+  window.addEventListener("resize", updateArrowState);
+  updateArrowState();
